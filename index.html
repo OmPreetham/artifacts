@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            padding-bottom: 100px; /* Space for search bar */
+        }
+
+        .header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        .title {
+            font-size: 8vw;
+            font-weight: 300;
+            letter-spacing: -0.05em;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .author {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            font-size: 1.2em;
+            font-weight: 300;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards 0.4s;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .author:hover {
+            color: #999;
+        }
+
+        .icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .icons img {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .icons img:nth-child(1) {
+            top: 15%;
+            left: 10%;
+            animation-delay: 0.2s;
+        }
+
+        .icons img:nth-child(2) {
+            top: 10%;
+            right: 10%;
+            animation-delay: 0.4s;
+        }
+
+        .icons img:nth-child(3) {
+            bottom: 20%;
+            left: 15%;
+            animation-delay: 0.6s;
+        }
+
+        .icons img:nth-child(4) {
+            bottom: 15%;
+            right: 15%;
+            animation-delay: 0.8s;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 4px;
+            padding: 4px;
+        }
+
+        .gallery img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        .gallery img.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+            font-size: 0.9em;
+            font-weight: 300;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        .summary {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            color: #666;
+            font-size: 0.95em;
+            font-weight: 300;
+            line-height: 1.6;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+            display: none;
+        }
+
+        .summary.visible {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
+        }
+
+        .summary p {
+            margin-bottom: 20px;
+        }
+
+        .summary ul {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .summary li {
+            margin-bottom: 12px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .summary li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #999;
+        }
+
+        .summary .inspiration {
+            margin-top: 30px;
+            font-style: italic;
+            color: #999;
+        }
+
+        .search-overlay {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+            pointer-events: none;
+        }
+
+        .search-overlay.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .search-container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 1px solid #a2a2a2;
+            outline: none;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #000;
+        }
+
+        .search-input::placeholder {
+            color: #999;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            .title {
+                font-size: 12vw;
+            }
+            .icons img {
+                width: 150px;
+                height: 150px;
+            }
+            .search-overlay {
+                padding: 15px;
+            }
+            .footer {
+                padding: 30px 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            .title {
+                font-size: 16vw;
+            }
+            .author {
+                bottom: 20px;
+                right: 20px;
+            }
+            .icons img {
+                width: 100px;
+                height: 100px;
+            }
+            .search-overlay {
+                padding: 10px;
+            }
+            .search-input {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            .footer {
+                padding: 20px 10px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="icons">
+            <img src="stuff/airplane.png" alt="Airplane">
+            <img src="stuff/carrot.png" alt="Carrot">
+            <img src="stuff/coffee-table.png" alt="Coffee Table">
+            <img src="stuff/sailboat.png" alt="Sailboat">
+        </div>
+        <h1 class="title">artifacts</h1>
+        <div class="author" id="aboutLink">about</div>
+    </div>
+
+    <div class="summary" id="summary">
+        <p>the artifacts collection distills everyday objects into charming, 3‑d clay‑style icons. each piece features:</p>
+        <ul>
+            <li>hand‑molded look – softly rounded forms and puffed proportions evoke miniature polymer sculptures.</li>
+            <li>matte‑satin finish – a gentle surface sheen adds depth without harsh reflections.</li>
+            <li>minimal seams, rich detail – simplified silhouettes—yet accented with stripes, roof racks, or spoilers—strike the balance between clarity and character.</li>
+            <li>unified lighting – subtle ambient occlusion and a soft drop shadow ground every icon while preserving a 100% transparent background for effortless layering.</li>
+            <li>consistent scale – tiny, tucked wheels and proportional embellishments keep the set visually cohesive across vehicles, tools, food, and more.</li>
+        </ul>
+        <p>designed for modern web interfaces, these icons drop seamlessly into dark or light themes, hero banners, or micro‑interactions—instantly adding warmth, playfulness, and a handcrafted touch to your product.</p>
+        <p class="inspiration">inspired by ghibli and airbnb style</p>
+    </div>
+
+    <div class="gallery">
+        <img src="stuff/airplane.png" alt="Airplane">
+        <img src="stuff/ambulance.png" alt="Ambulance">
+        <img src="stuff/bedside-table.png" alt="Bedside Table">
+        <img src="stuff/bell-pepper.png" alt="Bell Pepper">
+        <img src="stuff/broccoli.png" alt="Broccoli">
+        <img src="stuff/carrot.png" alt="Carrot">
+        <img src="stuff/city-bus.png" alt="City Bus">
+        <img src="stuff/coffee-table.png" alt="Coffee Table">
+        <img src="stuff/compact-car.png" alt="Compact Car">
+        <img src="stuff/console-table.png" alt="Console Table">
+        <img src="stuff/convertible.png" alt="Convertible">
+        <img src="stuff/corn-on-the-cob.png" alt="Corn on the Cob">
+        <img src="stuff/dining-table.png" alt="Dining Table">
+        <img src="stuff/eggplant.png" alt="Eggplant">
+        <img src="stuff/fire-truck.png" alt="Fire Truck">
+        <img src="stuff/folding-table.png" alt="Folding Table">
+        <img src="stuff/gaming-desk.png" alt="Gaming Desk">
+        <img src="stuff/helicopter.png" alt="Helicopter">
+        <img src="stuff/motorcycle.png" alt="Motorcycle">
+        <img src="stuff/office-desk.png" alt="Office Desk">
+        <img src="stuff/peas-in-pod.png" alt="Peas in Pod">
+        <img src="stuff/picnic-table.png" alt="Picnic Table">
+        <img src="stuff/pickup-truck.png" alt="Pickup Truck">
+        <img src="stuff/red-radish.png" alt="Red Radish">
+        <img src="stuff/round-cafe-table.png" alt="Round Cafe Table">
+        <img src="stuff/sailboat.png" alt="Sailboat">
+        <img src="stuff/scooter.png" alt="Scooter">
+        <img src="stuff/sedan.png" alt="Sedan">
+        <img src="stuff/semi-truck.png" alt="Semi Truck">
+        <img src="stuff/spinach-leaf.png" alt="Spinach Leaf">
+        <img src="stuff/sports-car.png" alt="Sports Car">
+        <img src="stuff/tamato.png" alt="Tomato">
+        <img src="stuff/train-locomotive.png" alt="Train Locomotive">
+        <img src="stuff/workbench.png" alt="Workbench">
+    </div>
+
+    <div class="footer">
+        © 2024 about. all rights reserved.
+    </div>
+
+    <div class="search-overlay">
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="search artifacts..." id="searchInput">
+        </div>
+    </div>
+
+    <script>
+        const gallery = document.querySelector('.gallery');
+        const searchInput = document.getElementById('searchInput');
+        const searchOverlay = document.querySelector('.search-overlay');
+        const footer = document.querySelector('.footer');
+        const galleryImages = gallery.getElementsByTagName('img');
+
+        // Intersection Observer for gallery images
+        const imageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        Array.from(galleryImages).forEach(img => {
+            imageObserver.observe(img);
+        });
+
+        // Intersection Observer for footer
+        const footerObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        footerObserver.observe(footer);
+
+        // Show search bar after scrolling past two rows
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY;
+            const twoRowsHeight = window.innerWidth <= 480 ? 240 : window.innerWidth <= 768 ? 300 : 400;
+            
+            if (scrollPosition > twoRowsHeight) {
+                searchOverlay.classList.add('visible');
+            } else {
+                searchOverlay.classList.remove('visible');
+            }
+        });
+
+        function filterImages() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const galleryImages = gallery.getElementsByTagName('img');
+
+            for (let img of galleryImages) {
+                const altText = img.alt.toLowerCase();
+                if (altText.includes(searchTerm)) {
+                    img.style.display = '';
+                } else {
+                    img.style.display = 'none';
+                }
+            }
+        }
+
+        searchInput.addEventListener('input', filterImages);
+
+        // About link functionality
+        const aboutLink = document.getElementById('aboutLink');
+        const summary = document.getElementById('summary');
+        let isSummaryVisible = false;
+
+        aboutLink.addEventListener('click', () => {
+            isSummaryVisible = !isSummaryVisible;
+            if (isSummaryVisible) {
+                summary.classList.add('visible');
+                // Scroll to summary
+                summary.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                summary.classList.remove('visible');
+            }
+        });
+
+        // Remove the intersection observer for summary since we're using click now
+        if (summaryObserver) {
+            summaryObserver.unobserve(summary);
+        }
+    </script>
+</body>
+</html> 
