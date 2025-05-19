@@ -3,7 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="artifacts">
+    
+    <!-- PWA Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Primary Meta Tags -->
+    <title>artifacts - clay-style icons by Om Preetham Bandi</title>
+    <meta name="title" content="artifacts - clay-style icons by Om Preetham Bandi">
+    <meta name="description" content="a collection of charming 3d clay-style icons featuring everyday objects, inspired by ghibli and airbnb style. designed for modern web interfaces.">
+    <meta name="author" content="Om Preetham Bandi">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ompreetham.github.io/artifacts/">
+    <meta property="og:title" content="artifacts - clay-style icons by Om Preetham Bandi">
+    <meta property="og:description" content="a collection of charming 3d clay-style icons featuring everyday objects, inspired by ghibli and airbnb style. designed for modern web interfaces.">
+    <meta property="og:image" content="https://ompreetham.github.io/artifacts/stuff/airplane.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ompreetham.github.io/artifacts/">
+    <meta property="twitter:title" content="artifacts - clay-style icons by Om Preetham Bandi">
+    <meta property="twitter:description" content="a collection of charming 3d clay-style icons featuring everyday objects, inspired by ghibli and airbnb style. designed for modern web interfaces.">
+    <meta property="twitter:image" content="https://ompreetham.github.io/artifacts/stuff/airplane.png">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://ompreetham.github.io/artifacts/">
+
+    <!-- Author Website -->
+    <link rel="author" href="https://ompreetham.com">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "CreativeWork",
+        "name": "artifacts",
+        "author": {
+            "@type": "Person",
+            "name": "Om Preetham Bandi",
+            "url": "https://ompreetham.com"
+        },
+        "description": "a collection of charming 3d clay-style icons featuring everyday objects, inspired by ghibli and airbnb style. designed for modern web interfaces.",
+        "url": "https://ompreetham.github.io/artifacts/",
+        "image": "https://ompreetham.github.io/artifacts/stuff/airplane.png",
+        "datePublished": "2024",
+        "publisher": {
+            "@type": "Person",
+            "name": "Om Preetham Bandi",
+            "url": "https://ompreetham.com"
+        }
+    }
+    </script>
+
     <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #666666;
+            --text-color-light: #999999;
+            --border-color: rgba(0, 0, 0, 0.05);
+            --hover-color: #999999;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #000000;
+                --text-color: #ffffff;
+                --text-color-light: #888888;
+                --border-color: rgba(255, 255, 255, 0.1);
+                --hover-color: #888888;
+            }
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,6 +93,9 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             padding-bottom: 100px; /* Space for search bar */
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .header {
@@ -49,7 +132,7 @@
         }
 
         .author:hover {
-            color: #999;
+            color: var(--hover-color);
         }
 
         .icons {
@@ -117,7 +200,7 @@
         .footer {
             text-align: center;
             padding: 40px 20px;
-            color: #666;
+            color: var(--text-color);
             font-size: 0.9em;
             font-weight: 300;
             opacity: 0;
@@ -125,11 +208,16 @@
             transition: all 0.4s ease;
         }
 
+        .footer.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .summary {
             max-width: 800px;
             margin: 0 auto;
             padding: 60px 20px;
-            color: #666;
+            color: var(--text-color);
             font-size: 0.95em;
             font-weight: 300;
             line-height: 1.6;
@@ -164,13 +252,13 @@
             content: "•";
             position: absolute;
             left: 0;
-            color: #999;
+            color: var(--text-color-light);
         }
 
         .summary .inspiration {
             margin-top: 30px;
             font-style: italic;
-            color: #999;
+            color: var(--text-color-light);
         }
 
         .search-overlay {
@@ -185,6 +273,7 @@
             transform: translateY(20px);
             transition: all 0.4s ease;
             pointer-events: none;
+            background-color: var(--bg-color);
         }
 
         .search-overlay.visible {
@@ -202,18 +291,20 @@
             width: 100%;
             padding: 12px 20px;
             font-size: 16px;
-            border: 1px solid #a2a2a2;
+            border: 1px solid var(--border-color);
             outline: none;
             border-radius: 20px;
             transition: all 0.3s ease;
+            background-color: var(--bg-color);
+            color: var(--text-color);
         }
 
         .search-input:focus {
-            border-color: #000;
+            border-color: var(--text-color);
         }
 
         .search-input::placeholder {
-            color: #999;
+            color: var(--text-color-light);
         }
 
         @keyframes fadeIn {
@@ -347,7 +438,7 @@
     </div>
 
     <div class="footer">
-        © 2024 about. all rights reserved.
+        © 2024 <a href="https://ompreetham.com" style="color: inherit; text-decoration: none;">om preetham bandi</a>. all rights reserved.
     </div>
 
     <div class="search-overlay">
@@ -357,6 +448,24 @@
     </div>
 
     <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/artifacts/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                        
+                        // Check for updates every hour
+                        setInterval(() => {
+                            registration.update();
+                        }, 3600000);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+
         const gallery = document.querySelector('.gallery');
         const searchInput = document.getElementById('searchInput');
         const searchOverlay = document.querySelector('.search-overlay');
