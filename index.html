@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
@@ -264,7 +264,7 @@
 
         .search-overlay {
             position: fixed;
-            bottom: 0;
+            bottom: 20px;
             left: 0;
             right: 0;
             padding: 20px;
@@ -291,20 +291,35 @@
             width: 100%;
             padding: 12px 20px;
             font-size: 16px;
-            border: 1px solid var(--text-color-light);
-            border-radius: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
             outline: none;
             color: var(--text-color);
-            transition: border-color 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
         .search-input:focus {
-            border-color: var(--text-color);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            border-color: rgba(0, 0, 0, 0.2);
         }
 
         .search-input::placeholder {
             color: var(--text-color-light);
             opacity: 0.7;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .search-input {
+                background: rgba(0, 0, 0, 0.8);
+                border-color: rgba(255, 255, 255, 0.1);
+            }
+            .search-input:focus {
+                background: rgba(0, 0, 0, 0.9);
+                border-color: rgba(255, 255, 255, 0.2);
+            }
         }
 
         @keyframes fadeIn {
@@ -339,7 +354,8 @@
                 height: 150px;
             }
             .search-overlay {
-                padding: 15px;
+                bottom: 16px;
+                padding: 16px;
             }
             .footer {
                 padding: 30px 15px;
@@ -362,7 +378,8 @@
                 height: 100px;
             }
             .search-overlay {
-                padding: 10px;
+                bottom: 12px;
+                padding: 12px;
             }
             .search-input {
                 padding: 10px 15px;
