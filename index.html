@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="artifacts">
@@ -72,7 +73,6 @@
             --text-color-light: #999999;
             --border-color: rgba(0, 0, 0, 0.05);
             --hover-color: #999999;
-            --overlay-bg: rgba(255, 255, 255, 0.98);
         }
 
         @media (prefers-color-scheme: dark) {
@@ -82,7 +82,6 @@
                 --text-color-light: #888888;
                 --border-color: rgba(255, 255, 255, 0.1);
                 --hover-color: #888888;
-                --overlay-bg: rgba(0, 0, 0, 0.98);
             }
         }
 
@@ -90,13 +89,11 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            padding-bottom: 100px;
+            padding-bottom: 100px; /* Space for search bar */
             background-color: var(--bg-color);
             color: var(--text-color);
             transition: background-color 0.3s ease, color 0.3s ease;
@@ -277,7 +274,6 @@
             transform: translateY(20px);
             transition: all 0.4s ease;
             pointer-events: none;
-            background-color: var(--overlay-bg);
         }
 
         .search-overlay.visible {
@@ -295,21 +291,15 @@
             width: 100%;
             padding: 12px 20px;
             font-size: 16px;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--text-color-light);
             border-radius: 30px;
             outline: none;
             color: var(--text-color);
-            background-color: var(--overlay-bg);
-            transition: all 0.3s ease;
-            -webkit-appearance: none;
-            appearance: none;
-            box-shadow: 0 2px 10px var(--border-color);
+            transition: border-color 0.3s ease;
         }
 
         .search-input:focus {
             border-color: var(--text-color);
-            background-color: var(--overlay-bg);
-            box-shadow: 0 4px 15px var(--border-color);
         }
 
         .search-input::placeholder {
