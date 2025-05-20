@@ -91,6 +91,17 @@
             box-sizing: border-box;
         }
 
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        * {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             padding-bottom: 100px; /* Space for search bar */
@@ -184,6 +195,14 @@
             padding: 4px;
         }
 
+        .gallery-item {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+
         .gallery img {
             width: 100%;
             aspect-ratio: 1;
@@ -196,6 +215,25 @@
         .gallery img.visible {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: var(--text-color);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            text-transform: lowercase;
+            white-space: nowrap;
+        }
+
+        .gallery-item:hover .gallery-caption,
+        .gallery-item.active .gallery-caption {
+            opacity: 1;
         }
 
         .footer {
@@ -274,7 +312,6 @@
             transform: translateY(20px);
             transition: all 0.4s ease;
             pointer-events: none;
-            z-index: 1000;
         }
 
         .search-overlay.visible {
@@ -286,7 +323,6 @@
         .search-container {
             max-width: 600px;
             width: 100%;
-            position: relative;
         }
 
         .search-input {
@@ -300,8 +336,6 @@
             background: rgba(255, 255, 255, 0.8);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
-            -webkit-overflow-scrolling: touch;
-            position: relative;
         }
 
         .search-input:focus {
@@ -360,10 +394,13 @@
             .search-overlay {
                 bottom: 16px;
                 padding: 16px;
-                position: fixed;
             }
             .footer {
                 padding: 30px 15px;
+            }
+            .gallery-caption {
+                font-size: 12px;
+                bottom: -20px;
             }
         }
 
@@ -385,7 +422,6 @@
             .search-overlay {
                 bottom: 12px;
                 padding: 12px;
-                position: fixed;
             }
             .search-input {
                 padding: 10px 15px;
@@ -394,6 +430,10 @@
             .footer {
                 padding: 20px 10px;
                 font-size: 0.8em;
+            }
+            .gallery-caption {
+                font-size: 11px;
+                bottom: -18px;
             }
         }
     </style>
@@ -424,44 +464,146 @@
     </div>
 
     <div class="gallery">
-        <img src="stuff/airplane.png" alt="Airplane">
-        <img src="stuff/ambulance.png" alt="Ambulance">
-        <img src="stuff/bedside-table.png" alt="Bedside Table">
-        <img src="stuff/bell-pepper.png" alt="Bell Pepper">
-        <img src="stuff/broccoli.png" alt="Broccoli">
-        <img src="stuff/carrot.png" alt="Carrot">
-        <img src="stuff/city-bus.png" alt="City Bus">
-        <img src="stuff/coffee-table.png" alt="Coffee Table">
-        <img src="stuff/compact-car.png" alt="Compact Car">
-        <img src="stuff/console-table.png" alt="Console Table">
-        <img src="stuff/convertible.png" alt="Convertible">
-        <img src="stuff/corn-on-the-cob.png" alt="Corn on the Cob">
-        <img src="stuff/dining-table.png" alt="Dining Table">
-        <img src="stuff/eggplant.png" alt="Eggplant">
-        <img src="stuff/fire-truck.png" alt="Fire Truck">
-        <img src="stuff/folding-table.png" alt="Folding Table">
-        <img src="stuff/gaming-desk.png" alt="Gaming Desk">
-        <img src="stuff/helicopter.png" alt="Helicopter">
-        <img src="stuff/motorcycle.png" alt="Motorcycle">
-        <img src="stuff/office-desk.png" alt="Office Desk">
-        <img src="stuff/peas-in-pod.png" alt="Peas in Pod">
-        <img src="stuff/picnic-table.png" alt="Picnic Table">
-        <img src="stuff/pickup-truck.png" alt="Pickup Truck">
-        <img src="stuff/red-radish.png" alt="Red Radish">
-        <img src="stuff/round-cafe-table.png" alt="Round Cafe Table">
-        <img src="stuff/sailboat.png" alt="Sailboat">
-        <img src="stuff/scooter.png" alt="Scooter">
-        <img src="stuff/sedan.png" alt="Sedan">
-        <img src="stuff/semi-truck.png" alt="Semi Truck">
-        <img src="stuff/spinach-leaf.png" alt="Spinach Leaf">
-        <img src="stuff/sports-car.png" alt="Sports Car">
-        <img src="stuff/tamato.png" alt="Tomato">
-        <img src="stuff/train-locomotive.png" alt="Train Locomotive">
-        <img src="stuff/workbench.png" alt="Workbench">
+        <div class="gallery-item">
+            <img src="stuff/airplane.png" alt="airplane" loading="lazy">
+            <div class="gallery-caption">airplane</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/ambulance.png" alt="ambulance" loading="lazy">
+            <div class="gallery-caption">ambulance</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/bedside-table.png" alt="bedside table" loading="lazy">
+            <div class="gallery-caption">bedside table</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/bell-pepper.png" alt="bell pepper" loading="lazy">
+            <div class="gallery-caption">bell pepper</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/broccoli.png" alt="broccoli" loading="lazy">
+            <div class="gallery-caption">broccoli</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/carrot.png" alt="carrot" loading="lazy">
+            <div class="gallery-caption">carrot</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/city-bus.png" alt="city bus" loading="lazy">
+            <div class="gallery-caption">city bus</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/coffee-table.png" alt="coffee table" loading="lazy">
+            <div class="gallery-caption">coffee table</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/compact-car.png" alt="compact car" loading="lazy">
+            <div class="gallery-caption">compact car</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/console-table.png" alt="console table" loading="lazy">
+            <div class="gallery-caption">console table</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/convertible.png" alt="convertible" loading="lazy">
+            <div class="gallery-caption">convertible</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/corn-on-the-cob.png" alt="corn on the cob" loading="lazy">
+            <div class="gallery-caption">corn on the cob</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/dining-table.png" alt="dining table" loading="lazy">
+            <div class="gallery-caption">dining table</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/eggplant.png" alt="eggplant" loading="lazy">
+            <div class="gallery-caption">eggplant</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/fire-truck.png" alt="fire truck" loading="lazy">
+            <div class="gallery-caption">fire truck</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/folding-table.png" alt="folding table" loading="lazy">
+            <div class="gallery-caption">folding table</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/gaming-desk.png" alt="gaming desk" loading="lazy">
+            <div class="gallery-caption">gaming desk</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/helicopter.png" alt="helicopter" loading="lazy">
+            <div class="gallery-caption">helicopter</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/motorcycle.png" alt="motorcycle" loading="lazy">
+            <div class="gallery-caption">motorcycle</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/office-desk.png" alt="office desk" loading="lazy">
+            <div class="gallery-caption">office desk</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/peas-in-pod.png" alt="peas in pod" loading="lazy">
+            <div class="gallery-caption">peas in pod</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/picnic-table.png" alt="picnic table" loading="lazy">
+            <div class="gallery-caption">picnic table</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/pickup-truck.png" alt="pickup truck" loading="lazy">
+            <div class="gallery-caption">pickup truck</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/red-radish.png" alt="red radish" loading="lazy">
+            <div class="gallery-caption">red radish</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/round-cafe-table.png" alt="round cafe table" loading="lazy">
+            <div class="gallery-caption">round cafe table</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/sailboat.png" alt="sailboat" loading="lazy">
+            <div class="gallery-caption">sailboat</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/scooter.png" alt="scooter" loading="lazy">
+            <div class="gallery-caption">scooter</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/sedan.png" alt="sedan" loading="lazy">
+            <div class="gallery-caption">sedan</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/semi-truck.png" alt="semi truck" loading="lazy">
+            <div class="gallery-caption">semi truck</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/spinach-leaf.png" alt="spinach leaf" loading="lazy">
+            <div class="gallery-caption">spinach leaf</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/sports-car.png" alt="sports car" loading="lazy">
+            <div class="gallery-caption">sports car</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/tamato.png" alt="tomato" loading="lazy">
+            <div class="gallery-caption">tomato</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/train-locomotive.png" alt="train locomotive" loading="lazy">
+            <div class="gallery-caption">train locomotive</div>
+        </div>
+        <div class="gallery-item">
+            <img src="stuff/workbench.png" alt="workbench" loading="lazy">
+            <div class="gallery-caption">workbench</div>
+        </div>
     </div>
 
     <div class="footer">
-        © 2024 <a href="https://ompreetham.com" style="color: inherit; text-decoration: none;">om preetham bandi</a>. all rights reserved.
+        © 2024 <a href="https://ompreetham.com" style="color: inherit; text-decoration: none;">om preetham bandi</a>. all rights reserved. <a href="https://github.com/ompreetham/artifacts" style="color: inherit; text-decoration: none; margin-left: 8px;">github</a>
     </div>
 
     <div class="search-overlay">
@@ -495,17 +637,25 @@
         const footer = document.querySelector('.footer');
         const galleryImages = gallery.getElementsByTagName('img');
 
-        // Intersection Observer for gallery images
+        // Intersection Observer for gallery images with improved performance
         const imageObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+                    const img = entry.target;
+                    // Only load the image if it hasn't been loaded yet
+                    if (!img.classList.contains('visible')) {
+                        img.classList.add('visible');
+                        // Optional: Unobserve after loading to improve performance
+                        imageObserver.unobserve(img);
+                    }
                 }
             });
         }, {
+            rootMargin: '50px 0px', // Start loading images 50px before they enter viewport
             threshold: 0.1
         });
 
+        // Observe all images
         Array.from(galleryImages).forEach(img => {
             imageObserver.observe(img);
         });
@@ -571,6 +721,23 @@
         if (summaryObserver) {
             summaryObserver.unobserve(summary);
         }
+
+        // Handle gallery item clicks
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            item.addEventListener('click', () => {
+                // Remove active class from all items
+                document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('active'));
+                // Add active class to clicked item
+                item.classList.add('active');
+            });
+        });
+
+        // Remove active class when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.gallery-item')) {
+                document.querySelectorAll('.gallery-item').forEach(item => item.classList.remove('active'));
+            }
+        });
     </script>
 </body>
 </html> 
