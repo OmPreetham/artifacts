@@ -68,20 +68,24 @@
 
     <style>
         :root {
-            --bg-color: #ffffff;
-            --text-color: #666666;
-            --text-color-light: #999999;
-            --border-color: rgba(0, 0, 0, 0.05);
-            --hover-color: #999999;
+            --bg-color: #000000;
+            --grid-dot-color: rgba(128, 128, 128, 0.5);
+            --grid-line-color: rgba(128, 128, 128, 0.15);
+            --text-color: rgba(255, 255, 255, 0.7);
+            --text-color-hover: rgba(255, 255, 255, 1);
+            --border-color-hover: rgba(65, 28, 28, 0.15);
+            --bg-hover: rgba(255, 255, 255, 0.05);
         }
 
-        @media (prefers-color-scheme: dark) {
+        @media (prefers-color-scheme: light) {
             :root {
-                --bg-color: #000000;
-                --text-color: #ffffff;
-                --text-color-light: #888888;
-                --border-color: rgba(255, 255, 255, 0.1);
-                --hover-color: #888888;
+                --bg-color: #ffffff;
+                --grid-dot-color: rgba(0, 0, 0, 0.3);
+                --grid-line-color: rgba(0, 0, 0, 0.05);
+                --text-color: rgba(0, 0, 0, 0.7);
+                --text-color-hover: rgba(0, 0, 0, 1);
+                --border-color-hover: rgba(0, 0, 0, 0.15);
+                --bg-hover: rgba(0, 0, 0, 0.05);
             }
         }
 
@@ -108,6 +112,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
         }
 
         .header {
@@ -309,7 +314,7 @@
         }
 
         .search-overlay {
-            position: sticky;
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
@@ -318,6 +323,12 @@
             justify-content: center;
             background-color: var(--bg-color);
             z-index: 100;
+            transition: transform 0.3s ease;
+            transform: translateY(-100%);
+        }
+
+        .search-overlay.visible {
+            transform: translateY(0);
         }
 
         .search-container {
@@ -327,6 +338,7 @@
             align-items: center;
             gap: 0;
             flex-wrap: wrap;
+            position: relative;
         }
 
         .search-title {
@@ -359,6 +371,8 @@
             transition: color 0.3s ease;
             white-space: nowrap;
             min-width: 50px;
+            position: relative;
+            z-index: 101;
         }
 
         .about-button:hover, .howto-button:hover {
@@ -621,6 +635,47 @@
         .highlight {
             animation: highlight 2s ease-out;
         }
+
+        .space-container {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            perspective: 1000px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .grid {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-style: preserve-3d;
+            background-image: 
+                radial-gradient(circle at 0 0, var(--grid-dot-color) 1px, transparent 1px),
+                linear-gradient(var(--grid-line-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line-color) 1px, transparent 1px);
+            background-size: 100px 100px, 100px 100px, 100px 100px;
+            background-position: 0 0, 0 0, 0 0;
+            width: 1000vw;
+            height: 1000vh;
+            transform: translate(-50%, -50%);
+            transition: background-image 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                background-size: 50px 50px, 50px 50px, 50px 50px;
+            }
+        }
+
+        /* Ensure gallery content stays above the background */
+        .gallery-container, 
+        .search-overlay,
+        .header,
+        .not-found-message {
+            position: relative;
+            z-index: 1;
+        }
     </style>
 
     <script>
@@ -654,6 +709,11 @@
     </script>
 </head>
 <body>
+    <!-- Add the 3D background container -->
+    <div class="space-container">
+        <div class="grid" id="grid"></div>
+    </div>
+
     <div class="header">
         <div class="icons">
             <img src="stuff/airplane.png" alt="Airplane">
@@ -1030,7 +1090,7 @@
 
         footerObserver.observe(footer);
 
-        // Show search bar after scrolling past two rows
+        // Update the search overlay visibility logic
         window.addEventListener('scroll', () => {
             const scrollPosition = window.scrollY;
             const twoRowsHeight = window.innerWidth <= 480 ? 240 : window.innerWidth <= 768 ? 300 : 400;
@@ -1143,16 +1203,15 @@
         const summary = document.getElementById('summary');
         let isSummaryVisible = false;
 
-        aboutLink.addEventListener('click', () => {
+        aboutLink.addEventListener('click', (e) => {
+            e.stopPropagation();
             isSummaryVisible = !isSummaryVisible;
             if (isSummaryVisible) {
                 summary.classList.add('visible');
-                // Hide howto if visible
                 if (isHowtoVisible) {
                     howto.classList.remove('visible');
                     isHowtoVisible = false;
                 }
-                // Scroll to summary
                 summary.scrollIntoView({ behavior: 'smooth' });
             } else {
                 summary.classList.remove('visible');
@@ -1164,16 +1223,15 @@
         const howto = document.getElementById('howto');
         let isHowtoVisible = false;
 
-        howtoLink.addEventListener('click', () => {
+        howtoLink.addEventListener('click', (e) => {
+            e.stopPropagation();
             isHowtoVisible = !isHowtoVisible;
             if (isHowtoVisible) {
                 howto.classList.add('visible');
-                // Hide summary if visible
                 if (isSummaryVisible) {
                     summary.classList.remove('visible');
                     isSummaryVisible = false;
                 }
-                // Scroll to howto
                 howto.scrollIntoView({ behavior: 'smooth' });
             } else {
                 howto.classList.remove('visible');
@@ -1264,12 +1322,118 @@
             this.focus();
         });
 
-        // Ensure search input is properly focused when clicking the search container
+        // Update search container click handler to be more specific
         document.querySelector('.search-container').addEventListener('click', function(e) {
-            if (e.target !== searchInput) {
+            // Only focus search if clicking directly on the container or search input
+            if (e.target === this || e.target === searchInput) {
                 searchInput.focus();
             }
         });
+
+        // Add padding to body to account for fixed search overlay
+        document.body.style.paddingTop = '80px';  // Adjust this value based on your search overlay height
+
+        // Add the 3D background animation
+        const grid = document.getElementById('grid');
+        const container = document.querySelector('.space-container');
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+        let currentX = 0;
+        let currentY = 0;
+
+        // Auto-movement variables
+        let isAutoMoving = true;
+        let autoMoveX = 0;
+        let autoMoveY = 0;
+        let autoMoveAngle = 0;
+        let userInteractionTimeout;
+        const INACTIVITY_TIMEOUT = 5000;
+
+        // Track mouse position
+        document.addEventListener('mousemove', (e) => {
+            clearTimeout(userInteractionTimeout);
+            isAutoMoving = false;
+
+            mouseX = (e.clientX - window.innerWidth / 2) / window.innerWidth;
+            mouseY = (e.clientY - window.innerHeight / 2) / window.innerHeight;
+
+            targetX = mouseX * 200; // Reduced movement range
+            targetY = mouseY * 200;
+
+            userInteractionTimeout = setTimeout(() => {
+                isAutoMoving = true;
+            }, INACTIVITY_TIMEOUT);
+        });
+
+        // Handle automatic movement
+        function updateAutoMovement() {
+            if (!isAutoMoving) return;
+            autoMoveAngle += 0.002;
+            autoMoveX = Math.sin(autoMoveAngle) * 75; // Reduced movement
+            autoMoveY = Math.cos(autoMoveAngle * 0.8) * 50;
+        }
+
+        // Smooth animation loop
+        function animate() {
+            updateAutoMovement();
+
+            const targetToUseX = isAutoMoving ? autoMoveX : targetX;
+            const targetToUseY = isAutoMoving ? autoMoveY : targetY;
+
+            currentX += (targetToUseX - currentX) * 0.05;
+            currentY += (targetToUseY - currentY) * 0.05;
+
+            grid.style.transform = `translate(-50%, -50%) 
+                                  translate3d(${currentX}px, ${currentY}px, 0)
+                                  rotateX(${isAutoMoving ? Math.sin(autoMoveAngle * 0.5) * 0.5 : -mouseY * 1.5}deg) 
+                                  rotateY(${isAutoMoving ? Math.cos(autoMoveAngle * 0.3) * 0.5 : mouseX * 1.5}deg)`;
+
+            requestAnimationFrame(animate);
+        }
+
+        // Handle touch devices
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isDragging = false;
+
+        document.addEventListener('touchstart', (e) => {
+            clearTimeout(userInteractionTimeout);
+            isAutoMoving = false;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            isDragging = true;
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            isAutoMoving = false;
+
+            const touchX = e.touches[0].clientX;
+            const touchY = e.touches[0].clientY;
+
+            const deltaX = (touchX - touchStartX) / window.innerWidth;
+            const deltaY = (touchY - touchStartY) / window.innerHeight;
+
+            const movementScale = window.innerWidth <= 768 ? 100 : 200;
+            targetX += deltaX * movementScale;
+            targetY += deltaY * movementScale;
+
+            touchStartX = touchX;
+            touchStartY = touchY;
+        });
+
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+            clearTimeout(userInteractionTimeout);
+            userInteractionTimeout = setTimeout(() => {
+                isAutoMoving = true;
+            }, INACTIVITY_TIMEOUT);
+        });
+
+        // Start the animation
+        animate();
     </script>
 </body>
 </html> 
