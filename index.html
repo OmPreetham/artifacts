@@ -596,6 +596,35 @@
             color: var(--text-color-light);
         }
     </style>
+
+    <script>
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/artifacts/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+
+        // Handle theme changes
+        function updateTheme() {
+            const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.style.setProperty('--bg-color', isDark ? '#000000' : '#ffffff');
+            document.documentElement.style.setProperty('--text-color', isDark ? '#ffffff' : '#666666');
+            document.documentElement.style.setProperty('--text-color-light', isDark ? '#888888' : '#999999');
+            document.documentElement.style.setProperty('--border-color', isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)');
+            document.documentElement.style.setProperty('--hover-color', isDark ? '#888888' : '#999999');
+        }
+
+        // Listen for theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme);
+        updateTheme();
+    </script>
 </head>
 <body>
     <div class="header">
@@ -808,24 +837,6 @@
     </div>
 
     <script>
-        // Register Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful');
-                        
-                        // Check for updates every hour
-                        setInterval(() => {
-                            registration.update();
-                        }, 3600000);
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
-
         const gallery = document.querySelector('.gallery');
         const searchInput = document.getElementById('searchInput');
         const searchOverlay = document.querySelector('.search-overlay');

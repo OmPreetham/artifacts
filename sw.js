@@ -1,74 +1,71 @@
-const CACHE_NAME = 'artifacts-v1';
+const CACHE_NAME = 'artifacts-v2';
 const ASSETS_TO_CACHE = [
-    '/',
-    '/index.html',
-    '/manifest.json',
-    '/icons/favicon-32x32.png',
-    '/icons/favicon-16x16.png',
-    '/icons/apple-touch-icon.png',
-    '/stuff/airplane.png',
-    '/stuff/carrot.png',
-    '/stuff/coffee-table.png',
-    '/stuff/sailboat.png',
-    '/stuff/ambulance.png',
-    '/stuff/bedside-table.png',
-    '/stuff/bell-pepper.png',
-    '/stuff/broccoli.png',
-    '/stuff/city-bus.png',
-    '/stuff/compact-car.png',
-    '/stuff/console-table.png',
-    '/stuff/convertible.png',
-    '/stuff/corn-on-the-cob.png',
-    '/stuff/dining-table.png',
-    '/stuff/eggplant.png',
-    '/stuff/fire-truck.png',
-    '/stuff/folding-table.png',
-    '/stuff/gaming-desk.png',
-    '/stuff/helicopter.png',
-    '/stuff/motorcycle.png',
-    '/stuff/office-desk.png',
-    '/stuff/peas-in-pod.png',
-    '/stuff/picnic-table.png',
-    '/stuff/pickup-truck.png',
-    '/stuff/red-radish.png',
-    '/stuff/round-cafe-table.png',
-    '/stuff/scooter.png',
-    '/stuff/sedan.png',
-    '/stuff/semi-truck.png',
-    '/stuff/spinach-leaf.png',
-    '/stuff/sports-car.png',
-    '/stuff/tamato.png',
-    '/stuff/train-locomotive.png',
-    '/stuff/workbench.png'
+    '/artifacts/',
+    '/artifacts/index.html',
+    '/artifacts/manifest.json',
+    '/artifacts/sw.js',
+    '/artifacts/public/logo.jpeg'
 ];
+
+// Add all icon files to cache
+const ICON_FILES = [
+    'airplane', 'carrot', 'coffee-table', 'sailboat', 'ambulance',
+    'bedside-table', 'bell-pepper', 'broccoli', 'city-bus', 'compact-car',
+    'console-table', 'convertible', 'corn-on-the-cob', 'dining-table',
+    'eggplant', 'fire-truck', 'folding-table', 'gaming-desk', 'helicopter',
+    'motorcycle', 'office-desk', 'peas-in-pod', 'picnic-table', 'pickup-truck',
+    'red-radish', 'round-cafe-table', 'scooter', 'sedan', 'semi-truck',
+    'spinach-leaf', 'sports-car', 'tamato', 'train-locomotive', 'workbench'
+];
+
+ICON_FILES.forEach(icon => {
+    ASSETS_TO_CACHE.push(`/artifacts/stuff/${icon}.png`);
+});
 
 // Install event - cache assets
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
+                console.log('Opened cache');
                 return cache.addAll(ASSETS_TO_CACHE);
             })
+            .catch(error => {
+                console.error('Cache failed:', error);
+            })
     );
+    // Activate the new service worker immediately
+    self.skipWaiting();
 });
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (cacheName !== CACHE_NAME) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        })
+        Promise.all([
+            // Take control of all clients as soon as it activates
+            clients.claim(),
+            // Clean up old caches
+            caches.keys().then((cacheNames) => {
+                return Promise.all(
+                    cacheNames.map((cacheName) => {
+                        if (cacheName !== CACHE_NAME) {
+                            console.log('Deleting old cache:', cacheName);
+                            return caches.delete(cacheName);
+                        }
+                    })
+                );
+            })
+        ])
     );
 });
 
 // Fetch event - serve from cache, fall back to network
 self.addEventListener('fetch', (event) => {
+    // Skip cross-origin requests
+    if (!event.request.url.startsWith(self.location.origin)) {
+        return;
+    }
+
     event.respondWith(
         caches.match(event.request)
             .then((response) => {
@@ -94,11 +91,18 @@ self.addEventListener('fetch', (event) => {
                         caches.open(CACHE_NAME)
                             .then((cache) => {
                                 cache.put(event.request, responseToCache);
+                            })
+                            .catch(error => {
+                                console.error('Cache put failed:', error);
                             });
 
                         return response;
                     }
-                );
+                ).catch(error => {
+                    console.error('Fetch failed:', error);
+                    // Return a fallback response if available
+                    return caches.match('/artifacts/offline.html');
+                });
             })
     );
 }); 
