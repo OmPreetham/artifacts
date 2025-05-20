@@ -12,9 +12,9 @@
     <meta name="apple-mobile-web-app-title" content="artifacts">
     
     <!-- PWA Icons -->
-    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+    <link rel="icon" type="image/jpeg" sizes="192x192" href="public/logo.jpeg">
+    <link rel="icon" type="image/jpeg" sizes="512x512" href="public/logo.jpeg">
+    <link rel="apple-touch-icon" href="public/logo.jpeg">
     <link rel="manifest" href="manifest.json">
 
     <!-- Primary Meta Tags -->
@@ -28,14 +28,14 @@
     <meta property="og:url" content="https://ompreetham.github.io/artifacts/">
     <meta property="og:title" content="artifacts - clay-style icons by Om Preetham Bandi">
     <meta property="og:description" content="a collection of charming 3d clay-style icons featuring everyday objects, inspired by ghibli and airbnb style. designed for modern web interfaces.">
-    <meta property="og:image" content="https://ompreetham.github.io/artifacts/stuff/airplane.png">
+    <meta property="og:image" content="https://ompreetham.github.io/artifacts/public/logo.jpeg">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://ompreetham.github.io/artifacts/">
     <meta property="twitter:title" content="artifacts - clay-style icons by Om Preetham Bandi">
     <meta property="twitter:description" content="a collection of charming 3d clay-style icons featuring everyday objects, inspired by ghibli and airbnb style. designed for modern web interfaces.">
-    <meta property="twitter:image" content="https://ompreetham.github.io/artifacts/stuff/airplane.png">
+    <meta property="twitter:image" content="https://ompreetham.github.io/artifacts/public/logo.jpeg">
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://ompreetham.github.io/artifacts/">
@@ -56,7 +56,7 @@
         },
         "description": "a collection of charming 3d clay-style icons featuring everyday objects, inspired by ghibli and airbnb style. designed for modern web interfaces.",
         "url": "https://ompreetham.github.io/artifacts/",
-        "image": "https://ompreetham.github.io/artifacts/stuff/airplane.png",
+        "image": "https://ompreetham.github.io/artifacts/public/logo.jpeg",
         "datePublished": "2024",
         "publisher": {
             "@type": "Person",
@@ -193,6 +193,7 @@
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 4px;
             padding: 4px;
+            min-height: 300px;
         }
 
         .gallery-item {
@@ -201,6 +202,11 @@
             flex-direction: column;
             align-items: center;
             cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
         }
 
         .gallery img {
@@ -301,47 +307,61 @@
         }
 
         .search-overlay {
-            position: fixed;
-            bottom: 20px;
+            position: sticky;
+            top: 0;
             left: 0;
             right: 0;
             padding: 20px;
             display: flex;
             justify-content: center;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.4s ease;
-            pointer-events: none;
-        }
-
-        .search-overlay.visible {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: all;
+            background-color: var(--bg-color);
+            z-index: 100;
         }
 
         .search-container {
-            max-width: 600px;
+            max-width: 700px;
             width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .search-title {
+            font-size: 16px;
+            color: var(--text-color);
+            font-weight: 300;
+            white-space: nowrap;
         }
 
         .search-input {
             width: 100%;
-            padding: 12px 20px;
+            padding: 12px 20px 12px 5px;
             font-size: 16px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
+            border: none;
             outline: none;
             color: var(--text-color);
-            background: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: transparent;
             transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .about-button, .howto-button {
+            font-size: 16px;
+            color: var(--text-color);
+            font-weight: 300;
+            cursor: pointer;
+            padding: 12px 0 12px 20px;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+            min-width: 60px;
+        }
+
+        .about-button:hover, .howto-button:hover {
+            color: var(--hover-color);
         }
 
         .search-input:focus {
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-            border-color: rgba(0, 0, 0, 0.2);
+            box-shadow: none;
         }
 
         .search-input::placeholder {
@@ -351,12 +371,10 @@
 
         @media (prefers-color-scheme: dark) {
             .search-input {
-                background: rgba(0, 0, 0, 0.8);
-                border-color: rgba(255, 255, 255, 0.1);
+                background: transparent;
             }
             .search-input:focus {
-                background: rgba(0, 0, 0, 0.9);
-                border-color: rgba(255, 255, 255, 0.2);
+                box-shadow: none;
             }
         }
 
@@ -392,7 +410,6 @@
                 height: 150px;
             }
             .search-overlay {
-                bottom: 16px;
                 padding: 16px;
             }
             .footer {
@@ -420,11 +437,10 @@
                 height: 100px;
             }
             .search-overlay {
-                bottom: 12px;
                 padding: 12px;
             }
             .search-input {
-                padding: 10px 15px;
+                padding: 10px 5px;
                 font-size: 14px;
             }
             .footer {
@@ -435,6 +451,111 @@
                 font-size: 11px;
                 bottom: -18px;
             }
+        }
+
+        .not-found {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-color);
+            font-weight: 300;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .not-found.visible {
+            display: flex;
+        }
+
+        .not-found .message {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .not-found .artwork {
+            width: 120px;
+            height: 120px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .not-found .artwork img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .not-found .artwork img.visible {
+            opacity: 1;
+        }
+
+        .not-found .github-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 14px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .not-found .github-link:hover {
+            opacity: 1;
+        }
+
+        .howto {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            color: var(--text-color);
+            font-size: 0.95em;
+            font-weight: 300;
+            line-height: 1.6;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+            display: none;
+        }
+
+        .howto.visible {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
+        }
+
+        .howto h2 {
+            font-size: 1.2em;
+            font-weight: 300;
+            margin-bottom: 20px;
+            text-transform: lowercase;
+        }
+
+        .howto p {
+            margin-bottom: 20px;
+        }
+
+        .howto ul {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .howto li {
+            margin-bottom: 12px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .howto li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--text-color-light);
         }
     </style>
 </head>
@@ -447,7 +568,15 @@
             <img src="stuff/sailboat.png" alt="Sailboat">
         </div>
         <h1 class="title">artifacts</h1>
-        <div class="author" id="aboutLink">about</div>
+    </div>
+
+    <div class="search-overlay">
+        <div class="search-container">
+            <span class="search-title">artifacts /</span>
+            <input type="text" class="search-input" placeholder="search artifacts..." id="searchInput">
+            <div class="about-button" id="aboutLink">about</div>
+            <div class="howto-button" id="howtoLink">how to</div>
+        </div>
     </div>
 
     <div class="summary" id="summary">
@@ -461,6 +590,29 @@
         </ul>
         <p>designed for modern web interfaces, these icons drop seamlessly into dark or light themes, hero banners, or micro‑interactions—instantly adding warmth, playfulness, and a handcrafted touch to your product.</p>
         <p class="inspiration">inspired by ghibli and airbnb style</p>
+    </div>
+
+    <div class="howto" id="howto">
+        <h2>how to use artifacts</h2>
+        <p>artifacts is a collection of high-quality, ai-generated clay-style icons in png format, designed for modern web interfaces. here's how to use them:</p>
+        
+        <ul>
+            <li>drag and drop – simply drag any png icon from the gallery and drop it into your design tool or code editor.</li>
+            <li>high quality – each png icon is generated with chatgpt and carefully crafted to ensure consistent style and quality.</li>
+            <li>transparent background – all png icons come with 100% transparent backgrounds for seamless integration.</li>
+            <li>responsive – png icons scale beautifully at any size while maintaining their clay-style charm.</li>
+            <li>theme support – works perfectly in both light and dark themes.</li>
+        </ul>
+
+        <p>usage tips:</p>
+        <ul>
+            <li>use in hero sections, feature lists, or as decorative elements in your ui.</li>
+            <li>combine multiple icons to create engaging compositions.</li>
+            <li>pair with bold typography for maximum impact.</li>
+            <li>experiment with different sizes to find the perfect fit for your design.</li>
+        </ul>
+
+        <p>all icons are free to use in both personal and commercial projects. attribution is appreciated but not required.</p>
     </div>
 
     <div class="gallery">
@@ -602,21 +754,26 @@
         </div>
     </div>
 
-    <div class="footer">
-        © 2024 <a href="https://ompreetham.com" style="color: inherit; text-decoration: none;">om preetham bandi</a>. all rights reserved. <a href="https://github.com/ompreetham/artifacts" style="color: inherit; text-decoration: none; margin-left: 8px;">github</a>
+    <div class="not-found" id="notFound">
+        <div class="message">no artifacts found?</div>
+        <div class="artwork">
+            <img src="stuff/airplane.png" alt="airplane">
+            <img src="stuff/carrot.png" alt="carrot">
+            <img src="stuff/coffee-table.png" alt="coffee table">
+            <img src="stuff/sailboat.png" alt="sailboat">
+        </div>
+        <a href="https://github.com/ompreetham/artifacts/issues/new" target="_blank" class="github-link">request an artifact →</a>
     </div>
 
-    <div class="search-overlay">
-        <div class="search-container">
-            <input type="text" class="search-input" placeholder="search artifacts..." id="searchInput">
-        </div>
+    <div class="footer">
+        © 2024 <a href="https://ompreetham.com" style="color: inherit; text-decoration: none;">om preetham bandi</a>. all rights reserved. <a href="https://github.com/ompreetham/artifacts" style="color: inherit; text-decoration: none; margin-left: 8px;">github</a>
     </div>
 
     <script>
         // Register Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/artifacts/sw.js')
+                navigator.serviceWorker.register('/sw.js')
                     .then(registration => {
                         console.log('ServiceWorker registration successful');
                         
@@ -636,6 +793,29 @@
         const searchOverlay = document.querySelector('.search-overlay');
         const footer = document.querySelector('.footer');
         const galleryImages = gallery.getElementsByTagName('img');
+
+        // Dynamic placeholder text
+        const placeholders = [
+            'search artifacts...',
+            'search vehicles...',
+            'search furniture...',
+            'search vegetables...',
+            'search tools...',
+            'search transportation...',
+            'search food...',
+            'search tables...'
+        ];
+
+        let currentPlaceholderIndex = 0;
+        
+        function updatePlaceholder() {
+            searchInput.placeholder = placeholders[currentPlaceholderIndex];
+            currentPlaceholderIndex = (currentPlaceholderIndex + 1) % placeholders.length;
+        }
+
+        // Update placeholder every 3 seconds
+        setInterval(updatePlaceholder, 3000);
+        updatePlaceholder(); // Set initial placeholder
 
         // Intersection Observer for gallery images with improved performance
         const imageObserver = new IntersectionObserver((entries) => {
@@ -685,17 +865,48 @@
             }
         });
 
+        const notFound = document.getElementById('notFound');
+        const artworkImages = notFound.querySelectorAll('.artwork img');
+        let currentArtworkIndex = 0;
+        let artworkInterval;
+
+        function showRandomArtwork() {
+            artworkImages.forEach(img => img.classList.remove('visible'));
+            artworkImages[currentArtworkIndex].classList.add('visible');
+            currentArtworkIndex = (currentArtworkIndex + 1) % artworkImages.length;
+        }
+
+        function startArtworkAnimation() {
+            showRandomArtwork();
+            artworkInterval = setInterval(showRandomArtwork, 2000);
+        }
+
+        function stopArtworkAnimation() {
+            clearInterval(artworkInterval);
+            artworkImages.forEach(img => img.classList.remove('visible'));
+        }
+
         function filterImages() {
             const searchTerm = searchInput.value.toLowerCase();
-            const galleryImages = gallery.getElementsByTagName('img');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            let hasResults = false;
 
-            for (let img of galleryImages) {
-                const altText = img.alt.toLowerCase();
-                if (altText.includes(searchTerm)) {
-                    img.style.display = '';
+            galleryItems.forEach(item => {
+                const caption = item.querySelector('.gallery-caption').textContent.toLowerCase();
+                if (caption.includes(searchTerm)) {
+                    item.style.display = '';
+                    hasResults = true;
                 } else {
-                    img.style.display = 'none';
+                    item.style.display = 'none';
                 }
+            });
+
+            if (!hasResults && searchTerm !== '') {
+                notFound.classList.add('visible');
+                startArtworkAnimation();
+            } else {
+                notFound.classList.remove('visible');
+                stopArtworkAnimation();
             }
         }
 
@@ -710,6 +921,11 @@
             isSummaryVisible = !isSummaryVisible;
             if (isSummaryVisible) {
                 summary.classList.add('visible');
+                // Hide howto if visible
+                if (isHowtoVisible) {
+                    howto.classList.remove('visible');
+                    isHowtoVisible = false;
+                }
                 // Scroll to summary
                 summary.scrollIntoView({ behavior: 'smooth' });
             } else {
@@ -717,10 +933,26 @@
             }
         });
 
-        // Remove the intersection observer for summary since we're using click now
-        if (summaryObserver) {
-            summaryObserver.unobserve(summary);
-        }
+        // How to link functionality
+        const howtoLink = document.getElementById('howtoLink');
+        const howto = document.getElementById('howto');
+        let isHowtoVisible = false;
+
+        howtoLink.addEventListener('click', () => {
+            isHowtoVisible = !isHowtoVisible;
+            if (isHowtoVisible) {
+                howto.classList.add('visible');
+                // Hide summary if visible
+                if (isSummaryVisible) {
+                    summary.classList.remove('visible');
+                    isSummaryVisible = false;
+                }
+                // Scroll to howto
+                howto.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                howto.classList.remove('visible');
+            }
+        });
 
         // Handle gallery item clicks
         document.querySelectorAll('.gallery-item').forEach(item => {

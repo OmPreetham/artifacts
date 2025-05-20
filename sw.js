@@ -1,65 +1,63 @@
 const CACHE_NAME = 'artifacts-v1';
 const ASSETS_TO_CACHE = [
-    '/artifacts/',
-    '/artifacts/index.html',
-    '/artifacts/manifest.json',
-    '/artifacts/icons/favicon-32x32.png',
-    '/artifacts/icons/favicon-16x16.png',
-    '/artifacts/icons/apple-touch-icon.png',
-    '/artifacts/icons/icon-192x192.png',
-    '/artifacts/icons/icon-512x512.png',
-    '/artifacts/stuff/airplane.png',
-    '/artifacts/stuff/ambulance.png',
-    '/artifacts/stuff/bedside-table.png',
-    '/artifacts/stuff/bell-pepper.png',
-    '/artifacts/stuff/broccoli.png',
-    '/artifacts/stuff/carrot.png',
-    '/artifacts/stuff/city-bus.png',
-    '/artifacts/stuff/coffee-table.png',
-    '/artifacts/stuff/compact-car.png',
-    '/artifacts/stuff/console-table.png',
-    '/artifacts/stuff/convertible.png',
-    '/artifacts/stuff/corn-on-the-cob.png',
-    '/artifacts/stuff/dining-table.png',
-    '/artifacts/stuff/eggplant.png',
-    '/artifacts/stuff/fire-truck.png',
-    '/artifacts/stuff/folding-table.png',
-    '/artifacts/stuff/gaming-desk.png',
-    '/artifacts/stuff/helicopter.png',
-    '/artifacts/stuff/motorcycle.png',
-    '/artifacts/stuff/office-desk.png',
-    '/artifacts/stuff/peas-in-pod.png',
-    '/artifacts/stuff/picnic-table.png',
-    '/artifacts/stuff/pickup-truck.png',
-    '/artifacts/stuff/red-radish.png',
-    '/artifacts/stuff/round-cafe-table.png',
-    '/artifacts/stuff/sailboat.png',
-    '/artifacts/stuff/scooter.png',
-    '/artifacts/stuff/sedan.png',
-    '/artifacts/stuff/semi-truck.png',
-    '/artifacts/stuff/spinach-leaf.png',
-    '/artifacts/stuff/sports-car.png',
-    '/artifacts/stuff/tamato.png',
-    '/artifacts/stuff/train-locomotive.png',
-    '/artifacts/stuff/workbench.png'
+    '/',
+    '/index.html',
+    '/manifest.json',
+    '/icons/favicon-32x32.png',
+    '/icons/favicon-16x16.png',
+    '/icons/apple-touch-icon.png',
+    '/stuff/airplane.png',
+    '/stuff/carrot.png',
+    '/stuff/coffee-table.png',
+    '/stuff/sailboat.png',
+    '/stuff/ambulance.png',
+    '/stuff/bedside-table.png',
+    '/stuff/bell-pepper.png',
+    '/stuff/broccoli.png',
+    '/stuff/city-bus.png',
+    '/stuff/compact-car.png',
+    '/stuff/console-table.png',
+    '/stuff/convertible.png',
+    '/stuff/corn-on-the-cob.png',
+    '/stuff/dining-table.png',
+    '/stuff/eggplant.png',
+    '/stuff/fire-truck.png',
+    '/stuff/folding-table.png',
+    '/stuff/gaming-desk.png',
+    '/stuff/helicopter.png',
+    '/stuff/motorcycle.png',
+    '/stuff/office-desk.png',
+    '/stuff/peas-in-pod.png',
+    '/stuff/picnic-table.png',
+    '/stuff/pickup-truck.png',
+    '/stuff/red-radish.png',
+    '/stuff/round-cafe-table.png',
+    '/stuff/scooter.png',
+    '/stuff/sedan.png',
+    '/stuff/semi-truck.png',
+    '/stuff/spinach-leaf.png',
+    '/stuff/sports-car.png',
+    '/stuff/tamato.png',
+    '/stuff/train-locomotive.png',
+    '/stuff/workbench.png'
 ];
 
-// Install Service Worker
-self.addEventListener('install', event => {
+// Install event - cache assets
+self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => {
+            .then((cache) => {
                 return cache.addAll(ASSETS_TO_CACHE);
             })
     );
 });
 
-// Activate Service Worker
-self.addEventListener('activate', event => {
+// Activate event - clean up old caches
+self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.keys().then(cacheNames => {
+        caches.keys().then((cacheNames) => {
             return Promise.all(
-                cacheNames.map(cacheName => {
+                cacheNames.map((cacheName) => {
                     if (cacheName !== CACHE_NAME) {
                         return caches.delete(cacheName);
                     }
@@ -69,24 +67,38 @@ self.addEventListener('activate', event => {
     );
 });
 
-// Fetch Event
-self.addEventListener('fetch', event => {
+// Fetch event - serve from cache, fall back to network
+self.addEventListener('fetch', (event) => {
     event.respondWith(
         caches.match(event.request)
-            .then(response => {
-                // Return cached version or fetch new
-                return response || fetch(event.request)
-                    .then(response => {
-                        // Cache new responses
-                        if (response.status === 200) {
-                            const responseClone = response.clone();
-                            caches.open(CACHE_NAME)
-                                .then(cache => {
-                                    cache.put(event.request, responseClone);
-                                });
+            .then((response) => {
+                // Return cached response if found
+                if (response) {
+                    return response;
+                }
+
+                // Clone the request because it can only be used once
+                const fetchRequest = event.request.clone();
+
+                // Make network request and cache the response
+                return fetch(fetchRequest).then(
+                    (response) => {
+                        // Check if we received a valid response
+                        if (!response || response.status !== 200 || response.type !== 'basic') {
+                            return response;
                         }
+
+                        // Clone the response because it can only be used once
+                        const responseToCache = response.clone();
+
+                        caches.open(CACHE_NAME)
+                            .then((cache) => {
+                                cache.put(event.request, responseToCache);
+                            });
+
                         return response;
-                    });
+                    }
+                );
             })
     );
 }); 
