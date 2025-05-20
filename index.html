@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="artifacts">
     
     <!-- PWA Icons -->
@@ -595,13 +595,40 @@
             left: 0;
             color: var(--text-color-light);
         }
+
+        /* Add smooth scrolling to the entire page */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Add smooth scrolling for browsers that don't support scroll-behavior */
+        .smooth-scroll {
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Add a transition for the scroll position */
+        .gallery-item {
+            transition: transform 0.3s ease-out;
+        }
+
+        /* Add a highlight animation for searched items */
+        @keyframes highlight {
+            0% { background-color: rgba(255, 255, 0, 0.2); }
+            100% { background-color: transparent; }
+        }
+
+        .highlight {
+            animation: highlight 2s ease-out;
+        }
     </style>
 
     <script>
-        // Register service worker
+        // Register service worker with correct path for local development
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/artifacts/sw.js')
+                // Use relative path for local development
+                navigator.serviceWorker.register('./sw.js')
                     .then(registration => {
                         console.log('ServiceWorker registration successful with scope: ', registration.scope);
                     })
@@ -640,7 +667,16 @@
     <div class="search-overlay">
         <div class="search-container">
             <span class="search-title">artifacts /</span>
-            <input type="text" class="search-input" placeholder="search artifacts..." id="searchInput">
+            <input type="text" 
+                   class="search-input" 
+                   placeholder="search artifacts..." 
+                   id="searchInput"
+                   autocomplete="off"
+                   autocorrect="off"
+                   autocapitalize="off"
+                   spellcheck="false"
+                   inputmode="search"
+                   enterkeyhint="search">
             <div class="about-button" id="aboutLink">about</div>
             <div class="howto-button" id="howtoLink">how to</div>
         </div>
@@ -1158,6 +1194,80 @@
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.gallery-item')) {
                 document.querySelectorAll('.gallery-item').forEach(item => item.classList.remove('active'));
+            }
+        });
+
+        // Update the search function to include smooth scrolling
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            let firstMatch = null;
+
+            galleryItems.forEach(item => {
+                const caption = item.querySelector('figcaption').textContent.toLowerCase();
+                const isMatch = caption.includes(searchTerm);
+                
+                // Remove previous highlights
+                item.classList.remove('highlight');
+                
+                if (isMatch) {
+                    item.style.display = 'block';
+                    // Store the first match for scrolling
+                    if (!firstMatch) {
+                        firstMatch = item;
+                    }
+                    // Add highlight animation
+                    item.classList.add('highlight');
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Smooth scroll to the first match if found
+            if (firstMatch) {
+                // Add a small delay to allow the highlight animation to be visible
+                setTimeout(() => {
+                    firstMatch.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }, 100);
+            }
+
+            // Update the not-found message
+            const notFoundMessage = document.getElementById('not-found-message');
+            const hasVisibleItems = Array.from(galleryItems).some(item => item.style.display !== 'none');
+            notFoundMessage.style.display = hasVisibleItems ? 'none' : 'block';
+        }
+
+        // Add smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add this to your existing script
+        document.getElementById('searchInput').addEventListener('focus', function() {
+            // Force keyboard to appear on mobile devices
+            this.click();
+            this.focus();
+        });
+
+        // Ensure search input is properly focused when clicking the search container
+        document.querySelector('.search-container').addEventListener('click', function(e) {
+            if (e.target !== searchInput) {
+                searchInput.focus();
             }
         });
     </script>
