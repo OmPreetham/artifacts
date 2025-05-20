@@ -15,7 +15,12 @@ const ICON_FILES = [
     'eggplant', 'fire-truck', 'folding-table', 'gaming-desk', 'helicopter',
     'motorcycle', 'office-desk', 'peas-in-pod', 'picnic-table', 'pickup-truck',
     'red-radish', 'round-cafe-table', 'scooter', 'sedan', 'semi-truck',
-    'spinach-leaf', 'sports-car', 'tamato', 'train-locomotive', 'workbench'
+    'spinach-leaf', 'sports-car', 'tamato', 'train-locomotive', 'workbench',
+    'acerola-barbados-cherry', 'aibu', 'apple', 'apricot', 'asian-pear',
+    'atemoya', 'avacado', 'banana', 'beal', 'bilberries', 'blackberry',
+    'blackcurrants', 'boysenberry', 'brazilian-guava', 'breadfruit',
+    'cactus-pear-prickly-pear', 'cantaloupe', 'citron', 'clemntine',
+    'cupuacu', 'red-cherries', 'red-cranberries', 'red-currants'
 ];
 
 ICON_FILES.forEach(icon => {
