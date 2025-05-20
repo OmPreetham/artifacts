@@ -2,20 +2,20 @@
     "name": "artifacts",
     "short_name": "artifacts",
     "description": "a collection of charming 3d clay-style icons featuring everyday objects",
-    "start_url": "/artifacts/",
+    "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#ffffff",
     "orientation": "any",
     "icons": [
         {
-            "src": "/artifacts/public/logo.jpeg",
+            "src": "public/logo.jpeg",
             "sizes": "192x192",
             "type": "image/jpeg",
             "purpose": "any maskable"
         },
         {
-            "src": "/artifacts/public/logo.jpeg",
+            "src": "public/logo.jpeg",
             "sizes": "512x512",
             "type": "image/jpeg",
             "purpose": "any maskable"

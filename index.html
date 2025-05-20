@@ -12,10 +12,10 @@
     <meta name="apple-mobile-web-app-title" content="artifacts">
     
     <!-- PWA Icons -->
-    <link rel="icon" type="image/jpeg" sizes="192x192" href="/artifacts/public/logo.jpeg">
-    <link rel="icon" type="image/jpeg" sizes="512x512" href="/artifacts/public/logo.jpeg">
-    <link rel="apple-touch-icon" href="/artifacts/public/logo.jpeg">
-    <link rel="manifest" href="/artifacts/manifest.json">
+    <link rel="icon" type="image/jpeg" sizes="192x192" href="public/logo.jpeg">
+    <link rel="icon" type="image/jpeg" sizes="512x512" href="public/logo.jpeg">
+    <link rel="apple-touch-icon" href="public/logo.jpeg">
+    <link rel="manifest" href="manifest.json">
 
     <!-- Primary Meta Tags -->
     <title>artifacts - clay-style icons by Om Preetham Bandi</title>
@@ -194,6 +194,8 @@
             gap: 4px;
             padding: 4px;
             min-height: 300px;
+            width: 100%;
+            max-width: 100%;
         }
 
         .gallery-item {
@@ -324,6 +326,7 @@
             display: flex;
             align-items: center;
             gap: 0;
+            flex-wrap: wrap;
         }
 
         .search-title {
@@ -331,6 +334,7 @@
             color: var(--text-color);
             font-weight: 300;
             white-space: nowrap;
+            padding-right: 4px;
         }
 
         .search-input {
@@ -342,7 +346,8 @@
             color: var(--text-color);
             background: transparent;
             transition: all 0.3s ease;
-            min-width: 200px;
+            min-width: 120px;
+            flex: 1;
         }
 
         .about-button, .howto-button {
@@ -353,7 +358,7 @@
             padding: 12px 0 12px 20px;
             transition: color 0.3s ease;
             white-space: nowrap;
-            min-width: 60px;
+            min-width: 50px;
         }
 
         .about-button:hover, .howto-button:hover {
@@ -419,6 +424,10 @@
                 font-size: 12px;
                 bottom: -20px;
             }
+            .not-found {
+                padding: 30px 15px;
+                margin: 15px auto;
+            }
         }
 
         @media (max-width: 480px) {
@@ -436,12 +445,24 @@
                 width: 100px;
                 height: 100px;
             }
-            .search-overlay {
-                padding: 12px;
+            .search-container {
+                gap: 4px;
+            }
+            .search-title {
+                font-size: 14px;
             }
             .search-input {
                 padding: 10px 5px;
                 font-size: 14px;
+                min-width: 100px;
+            }
+            .about-button, .howto-button {
+                font-size: 14px;
+                padding: 10px 0 10px 12px;
+                min-width: 45px;
+            }
+            .search-overlay {
+                padding: 8px;
             }
             .footer {
                 padding: 20px 10px;
@@ -451,28 +472,38 @@
                 font-size: 11px;
                 bottom: -18px;
             }
+            .not-found {
+                padding: 20px 10px;
+                margin: 10px auto;
+            }
+            .not-found .artwork {
+                width: 100px;
+                height: 100px;
+            }
         }
 
         .not-found {
-            display: none;
+            display: flex;
             text-align: center;
             padding: 40px 20px;
             color: var(--text-color);
             font-weight: 300;
             min-height: 300px;
-            display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-        }
-
-        .not-found.visible {
-            display: flex;
+            margin: 20px auto;
+            width: 100%;
+            max-width: 700px;
+            grid-column: 1 / -1;
         }
 
         .not-found .message {
             font-size: 16px;
             margin-bottom: 20px;
+            opacity: 0.7;
+            width: 100%;
+            text-align: center;
         }
 
         .not-found .artwork {
@@ -480,6 +511,9 @@
             height: 120px;
             margin: 20px auto;
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .not-found .artwork img {
@@ -489,8 +523,11 @@
             position: absolute;
             top: 0;
             left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.5s ease;
         }
 
         .not-found .artwork img.visible {
@@ -502,6 +539,7 @@
             text-decoration: none;
             font-size: 14px;
             opacity: 0.7;
+            margin-top: 20px;
             transition: opacity 0.3s ease;
         }
 
@@ -871,19 +909,49 @@
         let artworkInterval;
 
         function showRandomArtwork() {
+            // Hide all images first
             artworkImages.forEach(img => img.classList.remove('visible'));
-            artworkImages[currentArtworkIndex].classList.add('visible');
-            currentArtworkIndex = (currentArtworkIndex + 1) % artworkImages.length;
+            
+            // Show a random image
+            const randomIndex = Math.floor(Math.random() * artworkImages.length);
+            artworkImages[randomIndex].classList.add('visible');
+
+            // Ensure message and link are visible when artwork is shown
+            if (notFound.classList.contains('visible')) {
+                notFound.querySelector('.message').style.opacity = '1';
+                notFound.querySelector('.message').style.transform = 'translateY(0)';
+                notFound.querySelector('.github-link').style.opacity = '0.7';
+                notFound.querySelector('.github-link').style.transform = 'translateY(0)';
+            }
         }
 
         function startArtworkAnimation() {
+            // Show initial random artwork
             showRandomArtwork();
+            
+            // Clear any existing interval
+            if (artworkInterval) {
+                clearInterval(artworkInterval);
+            }
+            
+            // Set new interval
             artworkInterval = setInterval(showRandomArtwork, 2000);
         }
 
         function stopArtworkAnimation() {
-            clearInterval(artworkInterval);
+            if (artworkInterval) {
+                clearInterval(artworkInterval);
+                artworkInterval = null;
+            }
             artworkImages.forEach(img => img.classList.remove('visible'));
+            
+            // Hide message and link when animation stops
+            if (!notFound.classList.contains('visible')) {
+                notFound.querySelector('.message').style.opacity = '0';
+                notFound.querySelector('.message').style.transform = 'translateY(10px)';
+                notFound.querySelector('.github-link').style.opacity = '0';
+                notFound.querySelector('.github-link').style.transform = 'translateY(10px)';
+            }
         }
 
         function filterImages() {
@@ -901,14 +969,33 @@
                 }
             });
 
-            if (!hasResults && searchTerm !== '') {
-                notFound.classList.add('visible');
-                startArtworkAnimation();
-            } else {
-                notFound.classList.remove('visible');
-                stopArtworkAnimation();
+            // Always ensure not-found is at the end of gallery
+            if (!gallery.contains(notFound)) {
+                gallery.appendChild(notFound);
             }
+
+            // Always show the artwork animation
+            startArtworkAnimation();
         }
+
+        // Initialize the not-found section position and animation
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ensure not-found is at the end of gallery on page load
+            if (!gallery.contains(notFound)) {
+                gallery.appendChild(notFound);
+            }
+            // Start with a random artwork visible
+            showRandomArtwork();
+            // Start the continuous animation
+            startArtworkAnimation();
+        });
+
+        // Start the animation when the page becomes visible
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                startArtworkAnimation();
+            }
+        });
 
         searchInput.addEventListener('input', filterImages);
 
