@@ -117,12 +117,14 @@
 
         .header {
             height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             position: relative;
             padding: 20px;
+            margin-bottom: 0;
         }
 
         .title {
@@ -201,6 +203,7 @@
             min-height: 300px;
             width: 100%;
             max-width: 100%;
+            margin-top: 0;
         }
 
         .gallery-item {
@@ -314,17 +317,15 @@
         }
 
         .search-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            position: relative;
             padding: 20px;
             display: flex;
             justify-content: center;
             background-color: var(--bg-color);
             z-index: 100;
-            transition: transform 0.3s ease;
-            transform: translateY(-100%);
+            width: 100%;
+            margin-top: 0;
+            margin-bottom: 20px;
         }
 
         .search-overlay.visible {
@@ -1093,9 +1094,9 @@
         // Update the search overlay visibility logic
         window.addEventListener('scroll', () => {
             const scrollPosition = window.scrollY;
-            const twoRowsHeight = window.innerWidth <= 480 ? 240 : window.innerWidth <= 768 ? 300 : 400;
+            const headerHeight = window.innerHeight; // Use viewport height instead of header offset
             
-            if (scrollPosition > twoRowsHeight) {
+            if (scrollPosition > headerHeight) {
                 searchOverlay.classList.add('visible');
             } else {
                 searchOverlay.classList.remove('visible');
@@ -1331,7 +1332,7 @@
         });
 
         // Add padding to body to account for fixed search overlay
-        document.body.style.paddingTop = '80px';  // Adjust this value based on your search overlay height
+        document.body.style.paddingTop = '0';  // Remove the fixed padding
 
         // Add the 3D background animation
         const grid = document.getElementById('grid');
